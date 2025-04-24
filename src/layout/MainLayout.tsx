@@ -48,16 +48,13 @@ const MainLayout = () => {
         </Toolbar>
       </AppBar>
       <Sidebar open={sidebarOpen} />
-      <Box 
-        component="main" 
-        sx={{ 
-          flexGrow: 1, 
-          p: 3, 
-          pt: '64px',
-          height: 'calc(100vh - 64px)',
-          overflow: 'auto'
-        }}
-      >
+      <Box component="main" sx={{ 
+        flexGrow: 1, 
+        p: 3, 
+        pt: '80px', // Increased padding to account for header
+        height: 'calc(100vh - 80px)',
+        overflow: 'auto'
+      }}>
         <EditorSection />
       </Box>
     </Box>

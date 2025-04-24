@@ -1,67 +1,82 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface CharacterData {
+  color: string;
+  emotion: string;
+}
 
 interface EditorState {
-  content: string
-  selectedCharacter: string
-  selectedEmotion: string
+  content: string;
+  storyTitle: string;
+  selectedCharacters: Record<string, CharacterData>;
+  selectedEmotion: string;
   tags: Array<{
-    id: string
-    character: string
-    emotion: string
-    text: string
-    start: number
-    end: number
-  }>
+    id: string;
+    character: string;
+    emotion: string;
+    text: string;
+    start: number;
+    end: number;
+  }>;
 }
 
 const initialState: EditorState = {
   content: '',
-  selectedCharacter: 'bean',
+  storyTitle: '',
+  selectedCharacters: {},
   selectedEmotion: 'neutral',
   tags: [],
-}
+};
 
 export const editorSlice = createSlice({
   name: 'editor',
   initialState,
   reducers: {
     setContent: (state, action: PayloadAction<string>) => {
-      state.content = action.payload
+      state.content = action.payload;
     },
-    setSelectedCharacter: (state, action: PayloadAction<string>) => {
-      state.selectedCharacter = action.payload
+    setStoryTitle: (state, action: PayloadAction<string>) => {
+      state.storyTitle = action.payload;
+    },
+    setSelectedCharacters: (state, action: PayloadAction<Record<string, CharacterData>>) => {
+      state.selectedCharacters = action.payload;
+    },
+    removeSelectedCharacter: (state, action: PayloadAction<string>) => {
+      const { [action.payload]: _, ...rest } = state.selectedCharacters;
+      state.selectedCharacters = rest;
     },
     setSelectedEmotion: (state, action: PayloadAction<string>) => {
-      state.selectedEmotion = action.payload
+      state.selectedEmotion = action.payload;
+      // Update emotion for all selected characters
+      Object.keys(state.selectedCharacters).forEach(char => {
+        state.selectedCharacters[char].emotion = action.payload;
+      });
     },
     addTag: (state, action: PayloadAction<{
-      text: string
-      start: number
-      end: number
+      id: string;
+      text: string;
+      character: string;
+      emotion: string;
+      start: number;
+      end: number;
     }>) => {
-      const { text, start, end } = action.payload
-      state.tags.push({
-        id: Date.now().toString(),
-        character: state.selectedCharacter,
-        emotion: state.selectedEmotion,
-        text,
-        start,
-        end,
-      })
+      state.tags.push(action.payload);
     },
     removeTag: (state, action: PayloadAction<string>) => {
-      state.tags = state.tags.filter(tag => tag.id !== action.payload)
+      state.tags = state.tags.filter(tag => tag.id !== action.payload);
     },
   },
-})
+});
 
 export const {
   setContent,
-  setSelectedCharacter,
+  setStoryTitle,
+  setSelectedCharacters,
+  removeSelectedCharacter,
   setSelectedEmotion,
   addTag,
   removeTag,
-} = editorSlice.actions
+} = editorSlice.actions;
 
-export const selectEditor = (state: { editor: EditorState }) => state.editor
-export default editorSlice.reducer
+export const selectEditor = (state: { editor: EditorState }) => state.editor;
+export default editorSlice.reducer;
