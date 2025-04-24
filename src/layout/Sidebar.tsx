@@ -1,4 +1,4 @@
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material'
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Toolbar } from '@mui/material'
 import { motion } from 'framer-motion'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'

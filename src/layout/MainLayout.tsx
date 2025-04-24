@@ -48,7 +48,16 @@ const MainLayout = () => {
         </Toolbar>
       </AppBar>
       <Sidebar open={sidebarOpen} />
-      <Box component="main" sx={{ flexGrow: 1, p: 3, pt: '64px' }}>
+      <Box 
+        component="main" 
+        sx={{ 
+          flexGrow: 1, 
+          p: 3, 
+          pt: '64px',
+          height: 'calc(100vh - 64px)',
+          overflow: 'auto'
+        }}
+      >
         <EditorSection />
       </Box>
     </Box>
