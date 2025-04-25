@@ -10,26 +10,27 @@ import MoodIcon from '@mui/icons-material/Mood';
 const characterData = [
   { id: 'bean', name: 'Bean' },
   { id: 'marcus', name: 'Marcus' },
-  { id: 'luna', name: 'Luna' },
-  { id: 'alex', name: 'Alex' },
-  { id: 'sam', name: 'Sam' }
+  { id: 'luna', name: 'Luna' }
 ];
 
 const emotions = [
   { id: 'neutral', label: 'Neutral', icon: '😐' },
   { id: 'happy', label: 'Happy', icon: '😊' },
-  { id: 'sad', label: 'Sad', icon: '😢' },
-  { id: 'angry', label: 'Angry', icon: '😠' }
+  { id: 'sad', label: 'Sad', icon: '😢' }
 ];
 
-const CharacterModal = ({ 
+interface CharacterModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSelect: (characters: Record<string, {color: string, emotion: string}>) => void;
+  currentCharacters: Record<string, {color: string, emotion: string}>;
+}
+
+const CharacterModal: React.FC<CharacterModalProps> = ({ 
   open, 
   onClose, 
+  onSelect,
   currentCharacters
-}: { 
-  open: boolean, 
-  onClose: () => void,
-  currentCharacters: Record<string, { color: string, emotion: string }>
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCharacters, setSelectedCharacters] = useState(currentCharacters);
@@ -57,13 +58,13 @@ const CharacterModal = ({
   };
 
   const handleApply = () => {
-    onClose();
+    onSelect(selectedCharacters);
   };
 
   return (
     <Modal open={open} onClose={onClose}>
       <Paper sx={{ 
-        width: 500,
+        width: 400,
         maxHeight: '80vh',
         display: 'flex',
         flexDirection: 'column',
@@ -73,7 +74,7 @@ const CharacterModal = ({
         transform: 'translate(-50%, -50%)'
       }}>
         <Box sx={{ p: 2, borderBottom: '1px solid rgba(0,0,0,0.12)' }}>
-          <Typography variant="h6">Select Characters & Emotion</Typography>
+          <Typography variant="h6">Select Characters</Typography>
         </Box>
         
         <Box sx={{ p: 2 }}>
@@ -109,9 +110,7 @@ const CharacterModal = ({
                   }}>
                     {character.name.charAt(0)}
                   </Avatar>
-                  <ListItemText 
-                    primary={character.name}
-                  />
+                  <ListItemText primary={character.name} />
                 </ListItemButton>
               </ListItem>
             ))}
@@ -123,7 +122,7 @@ const CharacterModal = ({
         <Box sx={{ p: 2 }}>
           <Typography variant="subtitle1" gutterBottom>
             <MoodIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
-            Select Emotion for All Characters
+            Select Emotion
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             {emotions.map(emotion => (
@@ -142,11 +141,8 @@ const CharacterModal = ({
           <Button variant="outlined" sx={{ mr: 2 }} onClick={onClose}>
             Cancel
           </Button>
-          <Button 
-            variant="contained" 
-            onClick={handleApply}
-          >
-            Apply {Object.keys(selectedCharacters).length} Characters
+          <Button variant="contained" onClick={handleApply}>
+            Apply
           </Button>
         </Box>
       </Paper>

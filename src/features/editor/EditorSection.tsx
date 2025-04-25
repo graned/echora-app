@@ -1,13 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectEditor } from './editorSlice';
+import { selectEditor, setSelectedCharacters } from './editorSlice';
 import { 
   Box, Button, Chip, Avatar, Typography, TextField, 
-  Tooltip, Stack, Popover, colors 
+  Tooltip, Stack, colors 
 } from '@mui/material';
 import { FloatingButton } from './FloatingButton';
 import CharacterModal from './CharacterModal';
-import ClearIcon from '@mui/icons-material/Clear';
 import MoodIcon from '@mui/icons-material/Mood';
 
 const DEFAULT_COLORS = [
@@ -17,12 +16,18 @@ const DEFAULT_COLORS = [
 ];
 
 const EditorSection = () => {
+  const dispatch = useDispatch();
   const { content, selectedCharacters } = useSelector(selectEditor);
+  const [openModal, setOpenModal] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
-  const [highlightedText, setHighlightedText] = useState('');
 
   // Get currently selected characters
   const currentCharacters = Object.keys(selectedCharacters);
+
+  const handleCharacterSelect = (characters: Record<string, {color: string, emotion: string}>) => {
+    dispatch(setSelectedCharacters(characters));
+    setOpenModal(false);
+  };
 
   return (
     <Box sx={{ 
@@ -45,7 +50,7 @@ const EditorSection = () => {
         }}
       />
 
-      {/* Character Chips - Now always visible */}
+      {/* Character Chips */}
       {currentCharacters.length > 0 && (
         <Box sx={{
           p: 1,
@@ -102,7 +107,15 @@ const EditorSection = () => {
         }}
       />
 
-      <FloatingButton onClick={() => {}} />
+      <FloatingButton onClick={() => setOpenModal(true)} />
+      
+      {/* Character Selection Modal */}
+      <CharacterModal 
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onSelect={handleCharacterSelect}
+        currentCharacters={selectedCharacters}
+      />
     </Box>
   );
 };
